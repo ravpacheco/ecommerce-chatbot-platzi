@@ -4,16 +4,14 @@ const
     bodyParser = require('body-parser'),
     config = require('./config'),
     express = require('express'),
+    crypto = require('crypto'),
     request = require('request');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
-if (!(config['appSecret'] && config['validationToken'] && config['pageAccessToken'] && config['serverURL'])) {
-    console.error("Missing config values");
-    process.exit(1);
-}
+var userStates = {};
 
 // App Secret can be retrieved from the App Dashboard
 const APP_SECRET = config['appSecret'];
@@ -55,25 +53,25 @@ app.get('/webhook', function (req, res) {
  */
 function verifyRequestSignature(req, res, buf) {
     var signature = req.headers["x-hub-signature"];
-  
+
     if (!signature) {
-      // For testing, let's log an error. In production, you should throw an
-      // error.
-      console.error("Couldn't validate the signature.");
+        // For testing, let's log an error. In production, you should throw an
+        // error.
+        console.error("Couldn't validate the signature.");
     } else {
-      var elements = signature.split('=');
-      var method = elements[0];
-      var signatureHash = elements[1];
-  
-      var expectedHash = crypto.createHmac('sha1', APP_SECRET)
-                          .update(buf)
-                          .digest('hex');
-  
-      if (signatureHash != expectedHash) {
-        throw new Error("Couldn't validate the request signature.");
-      }
+        var elements = signature.split('=');
+        var method = elements[0];
+        var signatureHash = elements[1];
+
+        var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+            .update(buf)
+            .digest('hex');
+
+        if (signatureHash != expectedHash) {
+            throw new Error("Couldn't validate the request signature.");
+        }
     }
-  }
+}
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
@@ -117,108 +115,165 @@ app.post('/webhook', function (req, res) {
     }
 });
 
-/*
- * Message Event
- *
- * This event is called when a message is sent to your page. The 'message'
- * object format can vary depending on the kind of message that was received.
- * Read more at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received
- *
- * For this example, we're going to echo any text that we get. If we get some
- * special keywords ('button', 'generic', 'receipt'), then we'll send back
- * examples of those bubbles to illustrate the special message bubbles we've
- * created. If we receive a message with an attachment (image, video, audio),
- * then we'll simply confirm that we've received the attachment.
- *
- */
 function receivedMessage(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfMessage = event.timestamp;
-    var message = event.message;
-  
+    var message = event.message.text;
+
     console.log("Received message for user %d and page %d at %d with message:",
-      senderID, recipientID, timeOfMessage);
+        senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(message));
-  
+
+    //get user state
+    var state = userStates[senderID] || 0;
+
+    switch (state) {
+
+        //process state
+        //Estado inicial
+        case 0:
+            sendTextMessage(senderID, "Olá... É um prazer falar com você.");
+            setTimeout(() => sendQuickReply(senderID), 3000);
+            userStates[senderID] = "menu";
+            break;
+
+        case 'menu':
+
+            if (message == "Produtos" || message == "PRODUTOS") {
+                sendGenericMessage(senderID);
+                userStates[senderID] = "produtos";
+            }
+            else {
+                //reengajamento
+                if (message == "Endereco" || message == "ENDERECO" || message == "Endereço") {
+                    sendTextMessage(senderID, "Separei o endereço de todas as nossas lojas físicas.");
+                    sendTextMessage(senderID, "Belo Horizonte: Rua Paraíba 1400, Savassi. Telefone: (31) 3349-0000\n\nSão Paulo: Rua das Minas 1889, Moema. Telefone: (11) 2349-0000");
+                    sendTextMessage(senderID, "Estamos aguardando sua visita...");
+                }
+                else if (message == "Troca" || message == "POLITICA_TROCA" || message == "Política de troca") {
+                    sendTextMessage(senderID, "Você pode trocar qualquer peça com a nota fiscal em até 30 dias.\n\nObs.: A peça deve estar etiquetada!");
+                }
+                else if (message == "Desconto" || message == "Descontos" || message == "DESCONTO" ) {
+                    sendTextMessage(senderID, "Excelente notícia, temos uma promoção imperdível!!! | Eu ouvi desconto? É pra já!!!");
+                    sendTextMessage(senderID, "Na compra de 2 peças você tem 50% desconto na mais barata! Basta utilizar o código abaixo:");
+                    sendTextMessage(senderID, "#DESCONTODOCHATBOT")
+                }
+                setTimeout(() => sendQuickReply(senderID), 3000);
+            }
+            break;
+        case "produtos":
+
+            //produto 1
+            if (message == "1" || message == "primeiro" || message == "PRODUTO_1") {
+                sendTextMessage(senderID, "Oculus Rift, excelente escolha...");
+                sendImageMessage(senderID, "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg")
+            }
+            //produto 2
+            if (message == "2" || message == "segundo" || message == "PRODUTO_2") {
+                sendTextMessage(senderID, "Você escolheu oculus touch...");
+                sendImageMessage(senderID, "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg")
+            }
+
+            setTimeout(() => sendQuickReply(senderID), 5000);
+            userStates[senderID] = "menu";
+            break;
+
+        default:
+            sendTextMessage(senderID, "Desculpe não consegui entender...");
+            userStates[senderID] = "menu";
+            break;
+    }
+}
+
+function receivedMessage2(event) {
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfMessage = event.timestamp;
+    var message = event.message;
+
+    console.log("Received message for user %d and page %d at %d with message:",
+        senderID, recipientID, timeOfMessage);
+    console.log(JSON.stringify(message));
+
     var isEcho = message.is_echo;
     var messageId = message.mid;
     var appId = message.app_id;
     var metadata = message.metadata;
-  
+
     // You may get a text or attachment but not both
     var messageText = message.text;
     var messageAttachments = message.attachments;
     var quickReply = message.quick_reply;
-  
+
     if (isEcho) {
-      // Just logging message echoes to console
-      console.log("Received echo for message %s and app %d with metadata %s",
-        messageId, appId, metadata);
-      return;
+        // Just logging message echoes to console
+        console.log("Received echo for message %s and app %d with metadata %s",
+            messageId, appId, metadata);
+        return;
     } else if (quickReply) {
-      var quickReplyPayload = quickReply.payload;
-      console.log("Quick reply for message %s with payload %s",
-        messageId, quickReplyPayload);
-  
-      sendTextMessage(senderID, "Quick reply tapped");
-      return;
+        var quickReplyPayload = quickReply.payload;
+        console.log("Quick reply for message %s with payload %s",
+            messageId, quickReplyPayload);
+
+        sendTextMessage(senderID, "Quick reply tapped");
+        return;
     }
-  
+
     if (messageText) {
-  
-      // If we receive a text message, check to see if it matches any special
-      // keywords and send back the corresponding example. Otherwise, just echo
-      // the text we received.
-      switch (messageText.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
-  
-        case 'image':
-          requiresServerURL(sendImageMessage, [senderID]);
-          break;
-  
-        case 'gif':
-          requiresServerURL(sendGifMessage, [senderID]);
-          break;
-  
-        case 'audio':
-          requiresServerURL(sendAudioMessage, [senderID]);
-          break;
-  
-        case 'video':
-          requiresServerURL(sendVideoMessage, [senderID]);
-          break;
-  
-        case 'file':
-          requiresServerURL(sendFileMessage, [senderID]);
-          break;
-  
-        case 'button':
-          sendButtonMessage(senderID);
-          break;
-  
-        case 'generic':
-          requiresServerURL(sendGenericMessage, [senderID]);
-          break;
-  
-        case 'quick reply':
-          sendQuickReply(senderID);
-          break;
-  
-        case 'typing on':
-          sendTypingOn(senderID);
-          break;
-  
-        case 'typing off':
-          sendTypingOff(senderID);
-          break;
-  
-        default:
-          sendTextMessage(senderID, messageText);
-      }
+
+        // If we receive a text message, check to see if it matches any special
+        // keywords and send back the corresponding example. Otherwise, just echo
+        // the text we received.
+        switch (messageText.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
+
+            case 'image':
+                requiresServerURL(sendImageMessage, [senderID]);
+                break;
+
+            case 'gif':
+                requiresServerURL(sendGifMessage, [senderID]);
+                break;
+
+            case 'audio':
+                requiresServerURL(sendAudioMessage, [senderID]);
+                break;
+
+            case 'video':
+                requiresServerURL(sendVideoMessage, [senderID]);
+                break;
+
+            case 'file':
+                requiresServerURL(sendFileMessage, [senderID]);
+                break;
+
+            case 'button':
+                sendButtonMessage(senderID);
+                break;
+
+            case 'generic':
+                requiresServerURL(sendGenericMessage, [senderID]);
+                break;
+
+            case 'quick reply':
+                sendQuickReply(senderID);
+                break;
+
+            case 'typing on':
+                sendTypingOn(senderID);
+                break;
+
+            case 'typing off':
+                sendTypingOff(senderID);
+                break;
+
+            default:
+                sendTextMessage(senderID, messageText);
+        }
     } else if (messageAttachments) {
-      sendTextMessage(senderID, "Message with attachment received");
+        sendTextMessage(senderID, "Message with attachment received");
     }
-  }
+}
 
 /*
  * Message Read Event
@@ -310,7 +365,7 @@ function sendTextMessage(recipientId, messageText) {
  * Send an image using the Send API.
  *
  */
-function sendImageMessage(recipientId) {
+function sendImageMessage(recipientId, url) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -319,7 +374,7 @@ function sendImageMessage(recipientId) {
             attachment: {
                 type: "image",
                 payload: {
-                    url: SERVER_URL + "public/assets/rift.png"
+                    url: url
                 }
             }
         }
@@ -470,29 +525,29 @@ function sendGenericMessage(recipientId) {
                         title: "rift",
                         subtitle: "Next-generation virtual reality",
                         item_url: "https://www.oculus.com/en-us/rift/",
-                        image_url: SERVER_URL + "/assets/rift.png",
+                        image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
                         buttons: [{
                             type: "web_url",
                             url: "https://www.oculus.com/en-us/rift/",
-                            title: "Open Web URL"
+                            title: "Comprar"
                         }, {
                             type: "postback",
-                            title: "Call Postback",
-                            payload: "Payload for first bubble",
+                            title: "Saiba mais",
+                            payload: "PRODUTO_1"
                         }],
                     }, {
                         title: "touch",
                         subtitle: "Your Hands, Now in VR",
                         item_url: "https://www.oculus.com/en-us/touch/",
-                        image_url: SERVER_URL + "/assets/touch.png",
+                        image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
                         buttons: [{
                             type: "web_url",
                             url: "https://www.oculus.com/en-us/touch/",
-                            title: "Open Web URL"
+                            title: "Comprar"
                         }, {
                             type: "postback",
-                            title: "Call Postback",
-                            payload: "Payload for second bubble",
+                            title: "Saiba mais",
+                            payload: "PRODUTO_2"
                         }]
                     }]
                 }
@@ -514,22 +569,27 @@ function sendQuickReply(recipientId) {
             id: recipientId
         },
         message: {
-            text: "What's your favorite movie genre?",
+            text: "Em que posso lhe ajudar? Clique em uma das opções abaixo 👇",
             quick_replies: [
                 {
                     "content_type": "text",
-                    "title": "Action",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_ACTION"
+                    "title": "Política de troca",
+                    "payload": "POLITICA_TROCA"
                 },
                 {
                     "content_type": "text",
-                    "title": "Comedy",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_COMEDY"
+                    "title": "Descontos",
+                    "payload": "DESCONTO"
                 },
                 {
                     "content_type": "text",
-                    "title": "Drama",
-                    "payload": "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRAMA"
+                    "title": "Produtos",
+                    "payload": "PRODUTOS"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Endereço",
+                    "payload": "ENDERECO"
                 }
             ]
         }
