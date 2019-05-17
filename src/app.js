@@ -101,6 +101,8 @@ app.post('/webhook', function (req, res) {
                     receivedPostback(messagingEvent);
                 } else if (messagingEvent.read) {
                     receivedMessageRead(messagingEvent);
+                } else if (messagingEvent.optin) {
+                    receivedOptin(messagingEvent)
                 } else {
                     console.log("Webhook received unknown messagingEvent: ", messagingEvent);
                 }
@@ -154,7 +156,7 @@ function receivedMessage(event) {
                 else if (message == "Troca" || message == "POLITICA_TROCA" || message == "Política de troca") {
                     sendTextMessage(senderID, "Você pode trocar qualquer peça com a nota fiscal em até 30 dias.\n\nObs.: A peça deve estar etiquetada!");
                 }
-                else if (message == "Desconto" || message == "Descontos" || message == "DESCONTO" ) {
+                else if (message == "Desconto" || message == "Descontos" || message == "DESCONTO") {
                     sendTextMessage(senderID, "Excelente notícia, temos uma promoção imperdível!!! | Eu ouvi desconto? É pra já!!!");
                     sendTextMessage(senderID, "Na compra de 2 peças você tem 50% desconto na mais barata! Basta utilizar o código abaixo:");
                     sendTextMessage(senderID, "#DESCONTODOCHATBOT")
@@ -275,6 +277,116 @@ function receivedMessage2(event) {
     }
 }
 
+function receivedOptin(event) {
+    var ref = event.optin.ref;
+    var user_ref = event.optin.user_ref;
+    var messageData;
+    //produto 1
+    if (ref == "PRODUTO_1") {
+        messageData = {
+            recipient: {
+                user_ref: user_ref
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [{
+                            title: "rift",
+                            subtitle: "Next-generation virtual reality",
+                            item_url: "https://www.oculus.com/en-us/rift/",
+                            image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.oculus.com/en-us/rift/",
+                                title: "Comprar"
+                            }, {
+                                type: "postback",
+                                title: "Saiba mais",
+                                payload: "PRODUTO_1"
+                            }],
+                        }, {
+                            title: "touch",
+                            subtitle: "Your Hands, Now in VR",
+                            item_url: "https://www.oculus.com/en-us/touch/",
+                            image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.oculus.com/en-us/touch/",
+                                title: "Comprar"
+                            }, {
+                                type: "postback",
+                                title: "Saiba mais",
+                                payload: "PRODUTO_2"
+                            }]
+                        }]
+                    }
+                }
+            }
+        };
+    }
+    //produto 2
+    else if (ref == "PRODUTO_2") {
+        messageData = {
+            recipient: {
+                user_ref: user_ref
+            },
+            message: {
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        elements: [{
+                            title: "rift",
+                            subtitle: "Next-generation virtual reality",
+                            item_url: "https://www.oculus.com/en-us/rift/",
+                            image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.oculus.com/en-us/rift/",
+                                title: "Comprar"
+                            }, {
+                                type: "postback",
+                                title: "Saiba mais",
+                                payload: "PRODUTO_1"
+                            }],
+                        }, {
+                            title: "touch",
+                            subtitle: "Your Hands, Now in VR",
+                            item_url: "https://www.oculus.com/en-us/touch/",
+                            image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
+                            buttons: [{
+                                type: "web_url",
+                                url: "https://www.oculus.com/en-us/touch/",
+                                title: "Comprar"
+                            }, {
+                                type: "postback",
+                                title: "Saiba mais",
+                                payload: "PRODUTO_2"
+                            }]
+                        }]
+                    }
+                }
+            }
+        };
+    }
+    else {
+        messageData = {
+            "recipient": {
+                "user_ref": user_ref
+            },
+            "message": {
+                "text": "hello, world!"
+            }
+        };
+    }
+
+    callSendAPI(messageData);
+
+    console.log("Received optin", ref);
+}
+
 /*
  * Message Read Event
  *
@@ -338,9 +450,19 @@ function receivedPostback(event) {
     console.log("Received postback for user %d and page %d with payload '%s' " +
         "at %d", senderID, recipientID, payload, timeOfPostback);
 
-    // When a postback is called, we'll send a message back to the sender to
-    // let them know it was successful
-    sendTextMessage(senderID, "Postback called");
+    //produto 1
+    if (payload == "PRODUTO_1") {
+        sendTextMessage(senderID, "Oculus Rift, excelente escolha...");
+        sendImageMessage(senderID, "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg")
+    }
+    //produto 2
+    if (payload == "PRODUTO_2") {
+        sendTextMessage(senderID, "Você escolheu oculus touch...");
+        sendImageMessage(senderID, "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg")
+    }
+
+    setTimeout(() => sendQuickReply(senderID), 5000);
+    userStates[senderID] = "menu";
 }
 
 /*
