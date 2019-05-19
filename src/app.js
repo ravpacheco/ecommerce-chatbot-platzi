@@ -87,20 +87,42 @@ app.post('/webhook', function (req, res) {
 function receivedMessage(event) {
     var attachments = event.message.attachments;
     var text = event.message.text;
+    var senderID = event.sender.id;
 
-   //media
-   if (attachments) {
-       console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", attachments[0].type, attachments[0].payload.url)
-   }
-   //text
-   else if (text) {
-       console.log('Mensagem de texto recebida: [%s]', text);
-       //adicione aqui o código necessário para responder o texto 'Hello World'
-   }
-   else {
-       console.log('Evento de Webhook recebido: ', JSON.stringify(event));
-   }
+    //media
+    if (attachments) {
+        console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", attachments[0].type, attachments[0].payload.url)
+        //adicione aqui o código necessário para responder com um quick reply
+        //sendQuickReplyMessage(senderID);
+    }
+    //text
+    else if (text) {
+        console.log('Mensagem de texto recebida: [%s]', text);
+        sendTextMessage(senderID, "Hello World");
+    }
+    else {
+        console.log('Evento de Webhook recebido: ', JSON.stringify(event));
+    }
+}
 
+//Envia um quickreply para o usuário indicado no parâmetro `recipientId`
+function sendQuickReplyMessage(recipientId) {
+    //TODO: adicione o json correspondente ao quick reply e use o método callSendAPI
+}
+
+//Envia um texto (text) para o usuário indicado no parâmetro `recipientId`
+function sendTextMessage(recipientId, text) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: text,
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+
+    callSendAPI(messageData);
 }
 
 function callSendAPI(messageData) {
@@ -109,7 +131,7 @@ function callSendAPI(messageData) {
         qs: { access_token: PAGE_ACCESS_TOKEN },
         method: 'POST',
         json: messageData
- 
+
     }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.error("Mensagem enviada com sucesso");
@@ -117,7 +139,7 @@ function callSendAPI(messageData) {
             console.error("Falha ao enviar mensagem", response.statusCode, response.statusMessage, body.error);
         }
     });
- } 
+}
 
 // Startando o servidor
 app.listen(app.get('port'), function () {

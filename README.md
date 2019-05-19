@@ -1,12 +1,9 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 3 aula 3 - Enviando um texto
+Unidade 3 aula 4 - Enviando um quick reply
 
-Esse código possui as seguintes funcionalidades:
-
-* Adiciona o método `callSendAPI`, necessário para enviar qualquer conteúdo para a API do Facebook.
-* Adiciona a constante `PAGE_ACCESS_TOKEN`, necessário para enviar conteúdos através do método `callSendAPI`.
+Esse código possui todas as funcionalidades necessárias para receber e enviar mensagens.
 
 ## Configurando
 
@@ -26,10 +23,10 @@ Execute a API criada rodando o comando abaixo:
 
 ## Desafio 
 
-Crie um código necessário para responder o texto **'Hello World'** sempre que algum usuário enviar um texto para o bot.
+Adicione o código necessário ao método `sendQuickReplyMessage` para que o bot responda um quick reply sempre que algum usuário enviar uma media para o bot.
 
 ## Testando o funcionamento
 
-1. Acesse a página vinculada a sua aplicação e envie uma mensagem.
+1. Acesse a página vinculada a sua aplicação e envie mensagens de texto ou media.
 
-2. Se todo o processo anterior foi executado corretamente você receberá como resposta o texto **'Hello World'**.
+2. Se todo o processo anterior foi executado corretamente você receberá como resposta um quick reply sempre que o usuário enviar uma media.
