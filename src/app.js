@@ -12,9 +12,11 @@ var app = express();
 app.set('port', process.env.PORT || 5000);
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
-var VALIDATION_TOKEN = "<cole aqui seu validation token>";
-var APP_SECRET = "<cole aqui seu app secret>";
-var PAGE_ACCESS_TOKEN = "<cole aqui seu page access token>";
+var VALIDATION_TOKEN = "123456";
+var APP_SECRET = "7a7b135f604b89a6ef21f47ed8c387cc";
+var PAGE_ACCESS_TOKEN = "EAAEcreD8dPIBANLUbIlOMQduDYTlip7pS5ZAoruaZBy2PSclD7furjS9PYoheQTgfqPum7StQ1ZARXVr3v4SbhITZB5HK5FNdmnFFYwFivUcyPLoXeH4iSVidorCrIi6zQ3j9lcm1o5ZC0yckbfs2G4RXobB43PuaNA1GB6hgjsE5oklrZBlPu";
+
+var userStates = {};
 
 /*
  * Endpoint GET que será utilizado pelo Facebook para validação do seu TOKEN. 
@@ -89,23 +91,49 @@ function receivedMessage(event) {
     var text = event.message.text;
     var senderID = event.sender.id;
 
-    //media
-    if (attachments) {
-        var mediaType = attachments[0].type;
-        var mediaUrl = attachments[0].payload.url;
+    var currentState = userStates[senderID] || 0;
 
-        console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", mediaType, mediaUrl)
+    text = text.toLowerCase();
+    console.log(text);
 
-        sendMediaMessage(senderID, mediaType, mediaUrl);
-    }
-    //text
-    else if (text) {
+    switch (currentState) {
 
-        console.log('Mensagem de texto recebida: [%s]', text);
-        sendTextMessage(senderID, text);
-    }
-    else {
-        console.log('Evento de Webhook recebido: ', JSON.stringify(event));
+        //Usuário nunca conversou
+        case 0:
+            console.log("Usuário saindo do estado '0' para o estado 'menu'");
+            userStates[senderID] = 'menu';
+            break;
+
+        //usuário está no estado Menu
+        case "menu":
+            if (text == 'troca') {
+                console.log("Usuário escolheu a opção 'troca' e continua no estado 'menu'");
+                userStates[senderID] = 'menu';
+            } else if (text == 'endereco') {
+                console.log("Usuário escolheu a opção 'endereco' e continua no estado 'menu'");
+                userStates[senderID] = 'menu';
+            } else if (text == 'desconto') {
+                console.log("Usuário  escolheu a opção 'desconto' e continua no estado 'menu'");
+                userStates[senderID] = 'menu';
+            } else if (text == 'produtos') {
+                console.log("Usuário saindo do estado 'menu' para o estado 'produtos'");
+                userStates[senderID] = 'produtos';
+            } else {
+                console.log("Usuário continua no estado 'menu'");
+                userStates[senderID] = 'menu';
+            }
+            break;
+
+        //usuário está no estado Menu
+        case "produtos":
+            if (text == 'produto1') {
+                console.log("Usuário escolheu o produto 1 e está saindo do estado 'produtos' para o estado 'menu'");
+                userStates[senderID] = 'menu';
+            } else if (text == 'produto2') {
+                console.log("Usuário escolheu o produto 2 e está saindo do estado 'produtos' para o estado 'menu'");
+                userStates[senderID] = 'menu';
+            }
+            break;
     }
 }
 

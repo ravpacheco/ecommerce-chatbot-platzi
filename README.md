@@ -1,9 +1,9 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 4 aula 1 - Criando um bot Ping Pong
+Unidade 4 aula 3 - Definindo a máquina de estados do chatbot
 
-Esse código possui todas as funcionalidades necessárias para construir um bot ping pong. Um bot ping pong, responde as mesmas informações recebidas (medias e textos apenas).
+Esse projeto possui o código necessário para alterar o estado atual criando assim uma máquina de estados. A partir deste comportamento o bot será capaz de responder perguntas contextuais de acordo com o estado de cada cliente.
 
 ## Configurando
 
@@ -24,15 +24,15 @@ Execute a API criada rodando o comando abaixo:
 ## Desafio 
 
 Analise todo o código e tenha certeza que entendeu tudo o que foi feito até o momento.
-Já aprendemos:
 
-* Como configurar sua aplicação e página no Facebook
-* Como criar uma API em NodeJs para receber os eventos de Webhook
-* Como diferenciar as mensagens que chegam para o bot
-* Como enviar diferentes tipos de conteúdos através do bot
+* Como salvar o estado atual de todos os usuários do bot
+* Como movimentar o usuário entre diferentes estados
+* Como analisar o estado atual do usuário para decidir qual conteúdo enviar
+
+Experimente salvar o estado dos usuários de forma persistente. Use um banco de dados ao invés de um objeto em memória.
 
 ## Testando o funcionamento
 
 1. Acesse a página vinculada a sua aplicação e envie diferentes mensagens para o bot. 
 
-Se todo o processo de configuração foi feito com sucesso o bot deverá responder exatamente aquilo que lhe foi enviado (medias e textos apenas)
+Se todo o processo de configuração foi feito com sucesso o bot deverá responder contextualmente de acordo com o estado atual do usuário.
