@@ -1,9 +1,9 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 3 aula 6 - Como enviar qualquer conteúdo? (Carrossel por exemplo)
+Unidade 4 aula 1 - Criando um bot Ping Pong
 
-Esse código possui todas as funcionalidades necessárias para receber e enviar mensagens.
+Esse código possui todas as funcionalidades necessárias para construir um bot ping pong. Um bot ping pong, responde as mesmas informações recebidas (medias e textos apenas).
 
 ## Configurando
 
@@ -23,8 +23,16 @@ Execute a API criada rodando o comando abaixo:
 
 ## Desafio 
 
-Adicione o código necessário ao método `sendCarrosselMessage` para que o bot responda um carrossel sempre que algum usuário enviar o texto `carrossel` o bot.
+Analise todo o código e tenha certeza que entendeu tudo o que foi feito até o momento.
+Já aprendemos:
+
+* Como configurar sua aplicação e página no Facebook
+* Como criar uma API em NodeJs para receber os eventos de Webhook
+* Como diferenciar as mensagens que chegam para o bot
+* Como enviar diferentes tipos de conteúdos através do bot
 
 ## Testando o funcionamento
 
-1. Acesse a página vinculada a sua aplicação e envie diferentes mensagens de texto
+1. Acesse a página vinculada a sua aplicação e envie diferentes mensagens para o bot. 
+
+Se todo o processo de configuração foi feito com sucesso o bot deverá responder exatamente aquilo que lhe foi enviado (medias e textos apenas)

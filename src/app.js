@@ -91,25 +91,18 @@ function receivedMessage(event) {
 
     //media
     if (attachments) {
-        console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", attachments[0].type, attachments[0].payload.url)
-        sendQuickReplyMessage(senderID);
+        var mediaType = attachments[0].type;
+        var mediaUrl = attachments[0].payload.url;
+
+        console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", mediaType, mediaUrl)
+
+        sendMediaMessage(senderID, mediaType, mediaUrl);
     }
     //text
     else if (text) {
 
         console.log('Mensagem de texto recebida: [%s]', text);
-        text = text.toLowerCase();
-
-        if (text == "image") {
-            sendMediaMessage(senderID, "image", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/600px-Facebook_logo_%28square%29.png");
-        } else if (text == "video") {
-            sendMediaMessage(senderID, "video", "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_1mb.mp4");
-        } else if(text == "carrossel"){
-            sendCarrosselMessage(senderID);
-        }
-        else {
-            sendTextMessage(senderID, "Hello World");
-        }
+        sendTextMessage(senderID, text);
     }
     else {
         console.log('Evento de Webhook recebido: ', JSON.stringify(event));
@@ -117,9 +110,52 @@ function receivedMessage(event) {
 }
 
 //Envia mensagens do tipo generic template (carrossel)
-function sendCarrosselMessage(recipientId){
-   
-    //TODO: adicione o código necessário para enviar uma coleção de generic templates
+function sendCarrosselMessage(recipientId) {
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [{
+                        title: "rift",
+                        subtitle: "Next-generation virtual reality",
+                        item_url: "https://www.oculus.com/en-us/rift/",
+                        image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.oculus.com/en-us/rift/",
+                            title: "Comprar"
+                        }, {
+                            type: "postback",
+                            title: "Saiba mais",
+                            payload: "PRODUTO_1"
+                        }],
+                    }, {
+                        title: "touch",
+                        subtitle: "Your Hands, Now in VR",
+                        item_url: "https://www.oculus.com/en-us/touch/",
+                        image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
+                        buttons: [{
+                            type: "web_url",
+                            url: "https://www.oculus.com/en-us/touch/",
+                            title: "Comprar"
+                        }, {
+                            type: "postback",
+                            title: "Saiba mais",
+                            payload: "PRODUTO_2"
+                        }]
+                    }]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
 }
 
 //Envia mensagens de media (image, audio, video, file)
@@ -142,7 +178,6 @@ function sendMediaMessage(recipientId, mediaType, mediaURL) {
 
     callSendAPI(messageData);
 }
-
 
 //Envia um quickreply para o usuário indicado no parâmetro `recipientId`
 function sendQuickReplyMessage(recipientId) {
