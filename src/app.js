@@ -14,8 +14,8 @@ var app = express();
 app.set('port', process.env.PORT || 5000);
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
-var VALIDATION_TOKEN = "<coloque aqui seu validation token>";
-var APP_SECRET = "<coloque aqui seu app secret>";
+var VALIDATION_TOKEN = "<cole aqui seu validation token>";
+var APP_SECRET = "<cole aqui seu app secret>";
 
 /*
  * Endpoint GET que será utilizado pelo Facebook para validação do seu TOKEN. 
@@ -65,10 +65,30 @@ function verifyRequestSignature(req, res, buf) {
 //Endpoint da API capaz de receber requisições HTTP do método POST
 app.post('/webhook', function (req, res) {
     var data = req.body;
-    console.log('Evento de Webhook recebido: ', JSON.stringify(data));
 
-    res.sendStatus(200);
+
+    // Garantindo que o evento de Webhook é de uma página
+    if (data.object == 'page' && data.entry) {
+
+        // A API do Facebook pode mandar mais de um evento na mesma requisição. Por isso é preciso iterar em todos eles
+        data.entry.forEach(function (pageEntry) {
+            // Em um evento de webhook podem existir várias mensagens. Por isso é preciso iterar em cada uma delas.
+            pageEntry.messaging.forEach(function (messagingEvent) {
+                if (messagingEvent.message) {
+                    receivedMessage(messagingEvent);
+                }
+            });
+        });
+
+        res.sendStatus(200);
+    }
 });
+
+//Processa um evento de Webhook to tipo messages
+function receivedMessage(event) {
+    //adicione aqui um código para tratar a chegada de diferentes tipos de mensagem
+    console.log('Evento de Webhook recebido: ', JSON.stringify(event));
+}
 
 // Startando o servidor
 app.listen(app.get('port'), function () {

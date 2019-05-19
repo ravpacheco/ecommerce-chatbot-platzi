@@ -1,15 +1,12 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 2 aula 5 - Testando o recebimento de mensagens
+Unidade 3 aula 2 - Como diferenciar um tipo de conteúdo recebido?
 
 Esse código possui as seguintes funcionalidades:
 
-* Adiciona os métodos de segurança necessários para garantir que a comunicação está acontecendo entre a sua apliacação e a aplicação do Facebook
-* Adiciona dois parâmetros necessários para validação da aplicação: **VALIDATION_TOKEN** e **APP_SECRET**
-* Define um endpoint capaz de receber os eventos de webhook através de requisições HTTP do método POST
-* Loga no console todas as mensagens recebidas
-* Executa o servidor
+* Adiciona o código necessário para manusear qualquer tipo de evento de webhook.
+* Adiciona o método `receiveMessage`para tratar apenas eventos do tipo `message` vindos de páginas do Facebook
 
 ## Configurando
 
@@ -27,10 +24,12 @@ Execute a API criada rodando o comando abaixo:
 
 `npm start`
 
+## Desafio 
+
+Altere o código do método `receiveMessage` para diferenciar mensagens de texto e de medias recebidas pelo bot. 
+
 ## Testando o funcionamento
 
-1. Vá até o portal de desenvolvedores do Facebook, acesse sua aplicação configure os produtos **Webhook** e **Messenger** utilizando a URL do tunel e o VALIDATION_TOKEN definido anteriormente.
+1. Acesse a página vinculada a sua aplicação e envie uma mensagem.
 
-2. Acesse a página vinculada a sua aplicação e envie uma mensagem.
-
-3. Se todo o processo anterior foi executado corretamente você verá no console as mensagens recebidas por sua aplicação.
+2. Se todo o processo anterior foi executado corretamente você verá no console as mensagens recebidas por sua aplicação.
