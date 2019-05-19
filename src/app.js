@@ -97,18 +97,52 @@ function receivedMessage(event) {
     //text
     else if (text) {
 
-        //TODO: adicione o código necessário para diferencia imagem de video
         console.log('Mensagem de texto recebida: [%s]', text);
-        sendTextMessage(senderID, "Hello World");
+        text = text.toLowerCase();
+
+        if (text == "image") {
+            sendMediaMessage(senderID, "image", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/600px-Facebook_logo_%28square%29.png");
+        } else if (text == "video") {
+            sendMediaMessage(senderID, "video", "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_1mb.mp4");
+        } else if(text == "carrossel"){
+            sendCarrosselMessage(senderID);
+        }
+        else {
+            sendTextMessage(senderID, "Hello World");
+        }
     }
     else {
         console.log('Evento de Webhook recebido: ', JSON.stringify(event));
     }
 }
 
-function sendMediaMessage(recipientId, mediaType, mediaURL) {
-    // TODO: adicione o código necessário para permitir o envio de medias
+//Envia mensagens do tipo generic template (carrossel)
+function sendCarrosselMessage(recipientId){
+   
+    //TODO: adicione o código necessário para enviar uma coleção de generic templates
 }
+
+//Envia mensagens de media (image, audio, video, file)
+function sendMediaMessage(recipientId, mediaType, mediaURL) {
+
+    var messageData = {
+        "recipient": {
+            "id": recipientId
+        },
+        "message": {
+            "attachment": {
+                "type": mediaType,
+                "payload": {
+                    "url": mediaURL,
+                    "is_reusable": true
+                }
+            }
+        }
+    }
+
+    callSendAPI(messageData);
+}
+
 
 //Envia um quickreply para o usuário indicado no parâmetro `recipientId`
 function sendQuickReplyMessage(recipientId) {

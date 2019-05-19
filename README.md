@@ -1,7 +1,7 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 3 aula 5 - Enviando uma media
+Unidade 3 aula 6 - Como enviar qualquer conteúdo? (Carrossel por exemplo)
 
 Esse código possui todas as funcionalidades necessárias para receber e enviar mensagens.
 
@@ -23,7 +23,7 @@ Execute a API criada rodando o comando abaixo:
 
 ## Desafio 
 
-Adicione o código necessário ao método `sendMediaMessage` para que o bot responda uma imagem sempre que algum usuário enviar o texto `imagem`  e envie um video sempre que algum usuário enviar o texto `video` para o bot.
+Adicione o código necessário ao método `sendCarrosselMessage` para que o bot responda um carrossel sempre que algum usuário enviar o texto `carrossel` o bot.
 
 ## Testando o funcionamento
 
