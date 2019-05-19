@@ -92,11 +92,12 @@ function receivedMessage(event) {
     //media
     if (attachments) {
         console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", attachments[0].type, attachments[0].payload.url)
-        //adicione aqui o código necessário para responder com um quick reply
-        //sendQuickReplyMessage(senderID);
+        sendQuickReplyMessage(senderID);
     }
     //text
     else if (text) {
+
+        //TODO: adicione o código necessário para diferencia imagem de video
         console.log('Mensagem de texto recebida: [%s]', text);
         sendTextMessage(senderID, "Hello World");
     }
@@ -105,9 +106,38 @@ function receivedMessage(event) {
     }
 }
 
+function sendMediaMessage(recipientId, mediaType, mediaURL) {
+    // TODO: adicione o código necessário para permitir o envio de medias
+}
+
 //Envia um quickreply para o usuário indicado no parâmetro `recipientId`
 function sendQuickReplyMessage(recipientId) {
-    //TODO: adicione o json correspondente ao quick reply e use o método callSendAPI
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        "message": {
+            "text": "Isto é um quick reply",
+            "quick_replies": [
+                {
+                    "content_type": "text",
+                    "title": "Opção 1",
+                    "payload": "Opção 1",
+                },
+                {
+                    "content_type": "text",
+                    "title": "Opção 2",
+                    "payload": "Opção 2",
+                    "image_url": "http://aux.iconspalace.com/uploads/1658460238.png"
+                },
+                {
+                    "content_type": "user_email"
+                }
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
 }
 
 //Envia um texto (text) para o usuário indicado no parâmetro `recipientId`
