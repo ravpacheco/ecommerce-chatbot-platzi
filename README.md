@@ -3,7 +3,7 @@ Projeto de um assistente virtual para e-commerce
 
 Unidade 4 aula 3 - Definindo a máquina de estados do chatbot
 
-Esse projeto possui o código necessário para alterar o estado atual criando assim uma máquina de estados. A partir deste comportamento o bot será capaz de responder perguntas contextuais de acordo com o estado de cada cliente.
+Esse projeto possui o código necessário para alterar o estado atual dos usuários, criando assim uma máquina de estados. A partir deste comportamento o bot será capaz de responder perguntas contextuais de acordo com o estado de cada cliente.
 
 ## Configurando
 
