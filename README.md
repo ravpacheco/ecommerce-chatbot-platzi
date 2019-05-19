@@ -1,12 +1,12 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 3 aula 2 - Como diferenciar um tipo de conteúdo recebido?
+Unidade 3 aula 3 - Enviando um texto
 
 Esse código possui as seguintes funcionalidades:
 
-* Adiciona o código necessário para manusear qualquer tipo de evento de webhook.
-* Adiciona o método `receiveMessage`para tratar apenas eventos do tipo `message` vindos de páginas do Facebook
+* Adiciona o método `callSendAPI`, necessário para enviar qualquer conteúdo para a API do Facebook.
+* Adiciona a constante `PAGE_ACCESS_TOKEN`, necessário para enviar conteúdos através do método `callSendAPI`.
 
 ## Configurando
 
@@ -16,7 +16,7 @@ Clone esse branch em sua máquina e execute os seguintes comandos:
 
 `cd src`
 
-2. Abra o arquivo **app.js** e defina as constantes **VALIDATION_TOKEN** e **APP_SECRET**
+2. Abra o arquivo **app.js** e defina as constantes **VALIDATION_TOKEN**, **APP_SECRET**, **PAGE_ACCESS_TOKEN**
 
 ## Executando
 
@@ -26,10 +26,10 @@ Execute a API criada rodando o comando abaixo:
 
 ## Desafio 
 
-Altere o código do método `receiveMessage` para diferenciar mensagens de texto e de medias recebidas pelo bot. 
+Crie um código necessário para responder o texto **'Hello World'** sempre que algum usuário enviar um texto para o bot.
 
 ## Testando o funcionamento
 
 1. Acesse a página vinculada a sua aplicação e envie uma mensagem.
 
-2. Se todo o processo anterior foi executado corretamente você verá no console as mensagens recebidas por sua aplicação.
+2. Se todo o processo anterior foi executado corretamente você receberá como resposta o texto **'Hello World'**.

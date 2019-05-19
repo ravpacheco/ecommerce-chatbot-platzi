@@ -1,8 +1,6 @@
-
-//Criando uma API em Node.JS
 'use strict';
 
-//Inicializando variáveis necessárias
+//Inicializando dependencias necessárias
 const
     bodyParser = require('body-parser'),
     express = require('express'),
@@ -16,6 +14,7 @@ app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
 var VALIDATION_TOKEN = "<cole aqui seu validation token>";
 var APP_SECRET = "<cole aqui seu app secret>";
+var PAGE_ACCESS_TOKEN = "<cole aqui seu page access token>";
 
 /*
  * Endpoint GET que será utilizado pelo Facebook para validação do seu TOKEN. 
@@ -86,9 +85,39 @@ app.post('/webhook', function (req, res) {
 
 //Processa um evento de Webhook to tipo messages
 function receivedMessage(event) {
-    //adicione aqui um código para tratar a chegada de diferentes tipos de mensagem
-    console.log('Evento de Webhook recebido: ', JSON.stringify(event));
+    var attachments = event.message.attachments;
+    var text = event.message.text;
+
+   //media
+   if (attachments) {
+       console.log("Mensagem com uma media do tipo `%s` recebida. URL: %s", attachments[0].type, attachments[0].payload.url)
+   }
+   //text
+   else if (text) {
+       console.log('Mensagem de texto recebida: [%s]', text);
+       //adicione aqui o código necessário para responder o texto 'Hello World'
+   }
+   else {
+       console.log('Evento de Webhook recebido: ', JSON.stringify(event));
+   }
+
 }
+
+function callSendAPI(messageData) {
+    request({
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json: messageData
+ 
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.error("Mensagem enviada com sucesso");
+        } else {
+            console.error("Falha ao enviar mensagem", response.statusCode, response.statusMessage, body.error);
+        }
+    });
+ } 
 
 // Startando o servidor
 app.listen(app.get('port'), function () {
