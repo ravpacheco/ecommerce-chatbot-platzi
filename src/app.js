@@ -104,7 +104,8 @@ function receivedMessage(event) {
         case 0:
 
             sendTextMessage(senderID, "Olá... É um prazer falar com você.");
-            sendQuickReplyMessage(senderID);
+            //Mensagem será enviada aproximadamente 3 segundos após a mensagem anterior 
+            setTimeout(() => sendQuickReplyMessage(senderID), 3000);;
 
             console.log("Usuário saindo do estado '0' para o estado 'menu'");
             userStates[senderID] = 'menu';
@@ -113,7 +114,7 @@ function receivedMessage(event) {
         //usuário está no estado Menu
         case "menu":
 
-            if (text == 'produtos') {
+            if (text.indexOf('produtos') > -1) {
 
                 sendCarrosselMessage(senderID);
 
@@ -121,25 +122,27 @@ function receivedMessage(event) {
                 userStates[senderID] = 'produtos';
             } else {
 
-                if (text == 'troca') {
+                if (text.indexOf('troca') > -1) {
 
                     sendTextMessage(senderID, "Você pode trocar qualquer peça com a nota fiscal em até 30 dias.\n\nObs.: A peça deve estar etiquetada!");
 
                     console.log("Usuário escolheu a opção 'troca' e continua no estado 'menu'");
                     userStates[senderID] = 'menu';
-                } else if (text == 'endereco') {
+                } else if (text.indexOf('endereco') > -1 || text.indexOf('endereço') > -1) {
 
                     sendTextMessage(senderID, "Separei o endereço de todas as nossas lojas físicas.");
-                    sendTextMessage(senderID, "Belo Horizonte: Rua Paraíba 1400, Savassi. Telefone: (31) 3349-0000\n\nSão Paulo: Rua das Minas 1889, Moema. Telefone: (11) 2349-0000");
-                    sendTextMessage(senderID, "Estamos aguardando sua visita...");
+                    //Mensagem será enviada aproximadamente 1 segundos após a mensagem anterior 
+                    setTimeout(() => sendTextMessage(senderID, "Belo Horizonte: Rua Paraíba 1400, Savassi. Telefone: (31) 3349-0000\n\nSão Paulo: Rua das Minas 1889, Moema. Telefone: (11) 2349-0000"), 1000);
+                    //Mensagem será enviada aproximadamente 1,5 segundos após a mensagem anterior 
+                    setTimeout(() => sendTextMessage(senderID, "Estamos aguardando sua visita..."), 1500);
 
                     console.log("Usuário escolheu a opção 'endereco' e continua no estado 'menu'");
                     userStates[senderID] = 'menu';
-                } else if (text == 'desconto') {
+                } else if (text.indexOf('desconto') > -1) {
 
                     sendTextMessage(senderID, "Excelente notícia, temos uma promoção imperdível!!! | Eu ouvi desconto? É pra já!!!");
-                    sendTextMessage(senderID, "Na compra de 2 peças você tem 50% desconto na mais barata! Basta utilizar o código abaixo:");
-                    sendTextMessage(senderID, "#DESCONTODOCHATBOT")
+                    setTimeout(() => sendTextMessage(senderID, "Na compra de 2 peças você tem 50% desconto na mais barata! Basta utilizar o código abaixo:"), 1000);
+                    setTimeout(() => sendTextMessage(senderID, "#DESCONTODOCHATBOT"), 1500);
 
                     console.log("Usuário  escolheu a opção 'desconto' e continua no estado 'menu'");
                     userStates[senderID] = 'menu';
@@ -148,25 +151,29 @@ function receivedMessage(event) {
                     userStates[senderID] = 'menu';
                 }
 
-                sendQuickReplyMessage(senderID)
+                //Mensagem será enviada aproximadamente 4 segundos após a mensagem anterior 
+                setTimeout(() => sendQuickReplyMessage(senderID), 4000);
             }
             break;
 
         //usuário está no estado Produtos
         case "produtos":
-            if (text == 'produto1') {
+            if (text.indexOf('produto1') > -1) {
 
                 sendGenericTemplateMessage(senderID, 1);
 
                 console.log("Usuário escolheu o produto 1 e está saindo do estado 'produtos' para o estado 'menu'");
                 userStates[senderID] = 'menu';
-            } else if (text == 'produto2') {
+            } else if (text.indexOf('produto2') > -1) {
 
                 sendGenericTemplateMessage(senderID, 2);
 
                 console.log("Usuário escolheu o produto 2 e está saindo do estado 'produtos' para o estado 'menu'");
                 userStates[senderID] = 'menu';
             }
+
+            //Mensagem será enviada aproximadamente 3 segundos após a mensagem anterior 
+            setTimeout(() => sendQuickReplyMessage(senderID), 4000);
             break;
     }
 }
@@ -182,15 +189,15 @@ function receivedPostback(event) {
     //produto 1
     if (payload == "produto1") {
         sendTextMessage(senderID, "Oculus Rift, excelente escolha...");
-        sendGenericTemplateMessage(senderID, 1);
+        setTimeout(() => sendGenericTemplateMessage(senderID, 1), 2000);
     }
     //produto 2
     if (payload == "produto2") {
         sendTextMessage(senderID, "Você escolheu oculus touch...");
-        sendGenericTemplateMessage(senderID, 2);
+        setTimeout(() => sendGenericTemplateMessage(senderID, 2), 2000);
     }
 
-    sendQuickReplyMessage(senderID), 5000;
+    setTimeout(() => sendQuickReplyMessage(senderID), 4000);
 
     //atualiza o estado do usuário
     userStates[senderID] = "menu";
@@ -210,7 +217,7 @@ function sendCarrosselMessage(recipientId) {
                     template_type: "generic",
                     elements: [{
                         title: "rift",
-                        subtitle: "Next-generation virtual reality",
+                        subtitle: "Nova geração de realidade virtual",
                         item_url: "https://www.oculus.com/en-us/rift/",
                         image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
                         buttons: [{
@@ -224,7 +231,7 @@ function sendCarrosselMessage(recipientId) {
                         }],
                     }, {
                         title: "touch",
-                        subtitle: "Your Hands, Now in VR",
+                        subtitle: "Utilize também suas mão no VR",
                         item_url: "https://www.oculus.com/en-us/touch/",
                         image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
                         buttons: [{
@@ -234,7 +241,7 @@ function sendCarrosselMessage(recipientId) {
                         }, {
                             type: "postback",
                             title: "Saiba mais",
-                            payload: "produto1"
+                            payload: "produto2"
                         }]
                     }]
                 }
@@ -252,33 +259,25 @@ function sendGenericTemplateMessage(recipientId, productId) {
     if (productId == 1) {
         element = {
             title: "rift",
-            subtitle: "Next-generation virtual reality",
+            subtitle: "Nova geração de realidade virtual",
             item_url: "https://www.oculus.com/en-us/rift/",
             image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
             buttons: [{
                 type: "web_url",
                 url: "https://www.oculus.com/en-us/rift/",
                 title: "Comprar"
-            }, {
-                type: "postback",
-                title: "Saiba mais",
-                payload: "PRODUTO_1"
             }],
         };
     } else {
         element = {
             title: "touch",
-            subtitle: "Your Hands, Now in VR",
+            subtitle: "Utilize também suas mão no VR",
             item_url: "https://www.oculus.com/en-us/touch/",
             image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
             buttons: [{
                 type: "web_url",
                 url: "https://www.oculus.com/en-us/touch/",
                 title: "Comprar"
-            }, {
-                type: "postback",
-                title: "Saiba mais",
-                payload: "PRODUTO_2"
             }]
         }
     }
