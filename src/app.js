@@ -12,9 +12,9 @@ var app = express();
 app.set('port', process.env.PORT || 5000);
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
-var VALIDATION_TOKEN = "123456";
-var APP_SECRET = "7a7b135f604b89a6ef21f47ed8c387cc";
-var PAGE_ACCESS_TOKEN = "EAAEcreD8dPIBANLUbIlOMQduDYTlip7pS5ZAoruaZBy2PSclD7furjS9PYoheQTgfqPum7StQ1ZARXVr3v4SbhITZB5HK5FNdmnFFYwFivUcyPLoXeH4iSVidorCrIi6zQ3j9lcm1o5ZC0yckbfs2G4RXobB43PuaNA1GB6hgjsE5oklrZBlPu";
+var VALIDATION_TOKEN = "<cole aqui seu validation token>";
+var APP_SECRET = "<cole aqui seu app secret>";
+var PAGE_ACCESS_TOKEN = "<cole aqui seu page access token>";
 
 var userStates = {};
 
@@ -77,6 +77,8 @@ app.post('/webhook', function (req, res) {
             pageEntry.messaging.forEach(function (messagingEvent) {
                 if (messagingEvent.message) {
                     receivedMessage(messagingEvent);
+                } else if (messagingEvent.postback) {
+                    receivedPostback(messagingEvent);
                 }
             });
         });
@@ -100,41 +102,98 @@ function receivedMessage(event) {
 
         //Usuário nunca conversou
         case 0:
+
+            sendTextMessage(senderID, "Olá... É um prazer falar com você.");
+            sendQuickReplyMessage(senderID);
+
             console.log("Usuário saindo do estado '0' para o estado 'menu'");
             userStates[senderID] = 'menu';
             break;
 
         //usuário está no estado Menu
         case "menu":
-            if (text == 'troca') {
-                console.log("Usuário escolheu a opção 'troca' e continua no estado 'menu'");
-                userStates[senderID] = 'menu';
-            } else if (text == 'endereco') {
-                console.log("Usuário escolheu a opção 'endereco' e continua no estado 'menu'");
-                userStates[senderID] = 'menu';
-            } else if (text == 'desconto') {
-                console.log("Usuário  escolheu a opção 'desconto' e continua no estado 'menu'");
-                userStates[senderID] = 'menu';
-            } else if (text == 'produtos') {
+
+            if (text == 'produtos') {
+
+                sendCarrosselMessage(senderID);
+
                 console.log("Usuário saindo do estado 'menu' para o estado 'produtos'");
                 userStates[senderID] = 'produtos';
             } else {
-                console.log("Usuário continua no estado 'menu'");
-                userStates[senderID] = 'menu';
+
+                if (text == 'troca') {
+
+                    sendTextMessage(senderID, "Você pode trocar qualquer peça com a nota fiscal em até 30 dias.\n\nObs.: A peça deve estar etiquetada!");
+
+                    console.log("Usuário escolheu a opção 'troca' e continua no estado 'menu'");
+                    userStates[senderID] = 'menu';
+                } else if (text == 'endereco') {
+
+                    sendTextMessage(senderID, "Separei o endereço de todas as nossas lojas físicas.");
+                    sendTextMessage(senderID, "Belo Horizonte: Rua Paraíba 1400, Savassi. Telefone: (31) 3349-0000\n\nSão Paulo: Rua das Minas 1889, Moema. Telefone: (11) 2349-0000");
+                    sendTextMessage(senderID, "Estamos aguardando sua visita...");
+
+                    console.log("Usuário escolheu a opção 'endereco' e continua no estado 'menu'");
+                    userStates[senderID] = 'menu';
+                } else if (text == 'desconto') {
+
+                    sendTextMessage(senderID, "Excelente notícia, temos uma promoção imperdível!!! | Eu ouvi desconto? É pra já!!!");
+                    sendTextMessage(senderID, "Na compra de 2 peças você tem 50% desconto na mais barata! Basta utilizar o código abaixo:");
+                    sendTextMessage(senderID, "#DESCONTODOCHATBOT")
+
+                    console.log("Usuário  escolheu a opção 'desconto' e continua no estado 'menu'");
+                    userStates[senderID] = 'menu';
+                } else {
+                    console.log("Usuário continua no estado 'menu'");
+                    userStates[senderID] = 'menu';
+                }
+
+                sendQuickReplyMessage(senderID)
             }
             break;
 
-        //usuário está no estado Menu
+        //usuário está no estado Produtos
         case "produtos":
             if (text == 'produto1') {
+
+                sendGenericTemplateMessage(senderID, 1);
+
                 console.log("Usuário escolheu o produto 1 e está saindo do estado 'produtos' para o estado 'menu'");
                 userStates[senderID] = 'menu';
             } else if (text == 'produto2') {
+
+                sendGenericTemplateMessage(senderID, 2);
+
                 console.log("Usuário escolheu o produto 2 e está saindo do estado 'produtos' para o estado 'menu'");
                 userStates[senderID] = 'menu';
             }
             break;
     }
+}
+
+function receivedPostback(event) {
+    var senderID = event.sender.id;
+
+    // O 'payload' é o parametro definido em conteúdos como botões, generic templates e carrossel.
+    var payload = event.postback.payload;
+
+    console.log("Recebido um postback do usuário '%d' com o payload '%s' ", senderID, payload);
+
+    //produto 1
+    if (payload == "produto1") {
+        sendTextMessage(senderID, "Oculus Rift, excelente escolha...");
+        sendGenericTemplateMessage(senderID, 1);
+    }
+    //produto 2
+    if (payload == "produto2") {
+        sendTextMessage(senderID, "Você escolheu oculus touch...");
+        sendGenericTemplateMessage(senderID, 2);
+    }
+
+    sendQuickReplyMessage(senderID), 5000;
+
+    //atualiza o estado do usuário
+    userStates[senderID] = "menu";
 }
 
 //Envia mensagens do tipo generic template (carrossel)
@@ -161,7 +220,7 @@ function sendCarrosselMessage(recipientId) {
                         }, {
                             type: "postback",
                             title: "Saiba mais",
-                            payload: "PRODUTO_1"
+                            payload: "produto1"
                         }],
                     }, {
                         title: "touch",
@@ -175,9 +234,65 @@ function sendCarrosselMessage(recipientId) {
                         }, {
                             type: "postback",
                             title: "Saiba mais",
-                            payload: "PRODUTO_2"
+                            payload: "produto1"
                         }]
                     }]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+//Envia mensagens do tipo generic template (carrossel)
+function sendGenericTemplateMessage(recipientId, productId) {
+
+    var element;
+    if (productId == 1) {
+        element = {
+            title: "rift",
+            subtitle: "Next-generation virtual reality",
+            item_url: "https://www.oculus.com/en-us/rift/",
+            image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
+            buttons: [{
+                type: "web_url",
+                url: "https://www.oculus.com/en-us/rift/",
+                title: "Comprar"
+            }, {
+                type: "postback",
+                title: "Saiba mais",
+                payload: "PRODUTO_1"
+            }],
+        };
+    } else {
+        element = {
+            title: "touch",
+            subtitle: "Your Hands, Now in VR",
+            item_url: "https://www.oculus.com/en-us/touch/",
+            image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
+            buttons: [{
+                type: "web_url",
+                url: "https://www.oculus.com/en-us/touch/",
+                title: "Comprar"
+            }, {
+                type: "postback",
+                title: "Saiba mais",
+                payload: "PRODUTO_2"
+            }]
+        }
+    }
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+                    elements: [element]
                 }
             }
         }
@@ -213,22 +328,28 @@ function sendQuickReplyMessage(recipientId) {
         recipient: {
             id: recipientId
         },
-        "message": {
-            "text": "Isto é um quick reply",
-            "quick_replies": [
+        message: {
+            text: "Em que posso lhe ajudar? Clique em uma das opções abaixo 👇",
+            quick_replies: [
                 {
                     "content_type": "text",
-                    "title": "Opção 1",
-                    "payload": "Opção 1",
+                    "title": "Política de troca",
+                    "payload": "troca"
                 },
                 {
                     "content_type": "text",
-                    "title": "Opção 2",
-                    "payload": "Opção 2",
-                    "image_url": "http://aux.iconspalace.com/uploads/1658460238.png"
+                    "title": "Descontos",
+                    "payload": "desconto"
                 },
                 {
-                    "content_type": "user_email"
+                    "content_type": "text",
+                    "title": "Produtos",
+                    "payload": "produtos"
+                },
+                {
+                    "content_type": "text",
+                    "title": "Endereço",
+                    "payload": "endereco"
                 }
             ]
         }

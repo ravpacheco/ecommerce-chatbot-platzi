@@ -1,9 +1,9 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 4 aula 3 - Definindo a máquina de estados do chatbot
+Unidade 4 aula 4 - Adicionando conteúdos ao fluxo de conversa
 
-Esse projeto possui o código necessário para alterar o estado atual criando assim uma máquina de estados. A partir deste comportamento o bot será capaz de responder perguntas contextuais de acordo com o estado de cada cliente.
+Esse projeto possui o código necessário para alterar o estado dos usuários, criando assim uma máquina de estados. A partir deste comportamento o bot será capaz de enviar os conteúdos corretos de acordo com o estado de cada cliente.
 
 ## Configurando
 
@@ -29,7 +29,7 @@ Analise todo o código e tenha certeza que entendeu tudo o que foi feito até o 
 * Como movimentar o usuário entre diferentes estados
 * Como analisar o estado atual do usuário para decidir qual conteúdo enviar
 
-Experimente salvar o estado dos usuários de forma persistente. Use um banco de dados ao invés de um objeto em memória.
+Experimente adicionar novos estados e conteúdos ao seu chatbot. Ele pode entender sobre vários outros assuntos!
 
 ## Testando o funcionamento
 
