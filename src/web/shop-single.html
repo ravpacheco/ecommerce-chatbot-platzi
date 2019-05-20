@@ -118,8 +118,8 @@
             <!-- center_align: true | false -->
 
             <!-- checkbox -->
-            <div id="checkbox" class="fb-messenger-checkbox" origin="https://awesome-neumann-b8a119.netlify.com/"
-              page_id="437717616355509" messenger_app_id="313008106271986" allow_login="true" size="small" skin="light"
+            <div id="checkbox" class="fb-messenger-checkbox" origin="<cole aqui seu dominio>"
+              page_id="<cole aqui seu pageId>" messenger_app_id="<cole aqui seu app id>" allow_login="true" size="small" skin="light"
               center_align="false">
             </div>
 
@@ -325,7 +325,7 @@
 
     window.fbAsyncInit = function () {
       FB.init({
-        appId: '313008106271986',
+        appId: '<cole aqui seu appId>',
         autoLogAppEvents: true,
         xfbml: true,
         version: 'v3.3'
@@ -353,8 +353,8 @@
   <script>
     function confirmOptIn() {
       var optin = {
-        'app_id': '313008106271986',
-        'page_id': '437717616355509',
+        'app_id': '<cole aqui seu appId>',
+        'page_id': '<cole aqui seu pageId>',
         'user_ref': user_ref,
         'ref': 'produtoX_site'
       };
