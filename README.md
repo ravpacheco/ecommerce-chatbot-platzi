@@ -1,9 +1,9 @@
 # ecommerce-chatbot-platzi
 Projeto de um assistente virtual para e-commerce
 
-Unidade 4 aula 5 - Testando o chatbot
+Unidade 4 aula 7 - Adicionando o checkbox plugin em uma página web
 
-Esse projeto possui o código corrigido em relação aos problemas de ordem de mensagem. Conforme estudado na aula 5 da unidade 4, o Facebook não garante a ordem de entrega das mensagens. Por isso é necessário controlar o disparo das mensagens do lado da aplicação. Uma estratégia simples para resolver este problema é utilizar a função `setTimeout` do Node.
+Use esse projeto para executar um ecommerce de exemplo e visualizar o checkbox plugin.
 
 ## Configurando
 
@@ -11,18 +11,18 @@ Clone esse branch em sua máquina e execute os seguintes comandos:
 
 1. Acessar o diretório **src**
 
-`cd src`
+`cd src/web`
 
-2. Abra o arquivo **app.js** e defina as constantes **VALIDATION_TOKEN**, **APP_SECRET**, **PAGE_ACCESS_TOKEN**
+2. Abra o arquivo `shop-single.html` e configure as constantes **appId**, **page_id**, **app_id**
 
-## Executando
+3. Hospede o site em algum host que possua SSL. Sugestão: _netlify.com_
 
-Execute a API criada rodando o comando abaixo:
-
-`npm start`
+4. Vá até as configurações da sua página e configure o domínio do seu site como um domínio Whitelisted.
 
 ## Testando o funcionamento
 
-1. Acesse a página vinculada a sua aplicação e envie diferentes mensagens para o bot. 
+Abra a página no navegador, escolha um produto e veja se o plugin é renderizado corretamente.
 
-Se todo o processo de configuração foi feito com sucesso o bot deverá responder com as mensagens na ordem correta.
+## Desafio
+
+1. Experimente alterar as configurações do checkbox plugin, alterando por exemplo seu tamanho e o formato de centralização.
