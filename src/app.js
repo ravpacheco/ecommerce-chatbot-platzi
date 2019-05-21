@@ -79,6 +79,8 @@ app.post('/webhook', function (req, res) {
                     receivedMessage(messagingEvent);
                 } else if (messagingEvent.postback) {
                     receivedPostback(messagingEvent);
+                } else if (messagingEvent.optin) {
+                    receivedOptin(messagingEvent)
                 }
             });
         });
@@ -246,6 +248,26 @@ function sendCarrosselMessage(recipientId) {
                     }]
                 }
             }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function receivedOptin(event) {
+    var ref = event.optin.ref;
+    var user_ref = event.optin.user_ref;
+    var messageData;
+    
+    console.log("Received optin", ref);
+
+    //JSON de resposta quando se tem um 'user_ref' é diferente
+    messageData = {
+        "recipient": {
+            "user_ref": user_ref
+        },
+        "message": {
+            "text": "Olá vi que você tem interesse em um dos nossos produtos no site. Qualquer dúvida estou por aqui!"
         }
     };
 
