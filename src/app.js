@@ -106,16 +106,16 @@ function receivedMessage(event) {
 
         //usuário está no estado Menu
         case "menu":
-            if (text == 'troca') {
+            if (text.indexOf('troca') > -1) {
                 console.log("Usuário escolheu a opção 'troca' e continua no estado 'menu'");
                 userStates[senderID] = 'menu';
-            } else if (text == 'endereco') {
+            } else if (text.indexOf('endereco') > -1 || text.indexOf('endereço') > -1) {
                 console.log("Usuário escolheu a opção 'endereco' e continua no estado 'menu'");
                 userStates[senderID] = 'menu';
-            } else if (text == 'desconto') {
+            } else if (text.indexOf('desconto') > -1) {
                 console.log("Usuário  escolheu a opção 'desconto' e continua no estado 'menu'");
                 userStates[senderID] = 'menu';
-            } else if (text == 'produtos') {
+            } else if (text.indexOf('produto') >-1) {
                 console.log("Usuário saindo do estado 'menu' para o estado 'produtos'");
                 userStates[senderID] = 'produtos';
             } else {
@@ -124,12 +124,12 @@ function receivedMessage(event) {
             }
             break;
 
-        //usuário está no estado Menu
+        //usuário está no estado produtos
         case "produtos":
-            if (text == 'produto1') {
+            if (text == 'produto1' || text == 'primeiro') {
                 console.log("Usuário escolheu o produto 1 e está saindo do estado 'produtos' para o estado 'menu'");
                 userStates[senderID] = 'menu';
-            } else if (text == 'produto2') {
+            } else if (text == 'produto2' || text == 'segundo') {
                 console.log("Usuário escolheu o produto 2 e está saindo do estado 'produtos' para o estado 'menu'");
                 userStates[senderID] = 'menu';
             }
@@ -151,7 +151,7 @@ function sendCarrosselMessage(recipientId) {
                     template_type: "generic",
                     elements: [{
                         title: "rift",
-                        subtitle: "Next-generation virtual reality",
+                        subtitle: "Nova geração de realidade virtual",
                         item_url: "https://www.oculus.com/en-us/rift/",
                         image_url: "https://cdn.attackofthefanboy.com/wp-content/uploads/2015/09/Oculus-Rift-Price.jpg",
                         buttons: [{
@@ -161,11 +161,11 @@ function sendCarrosselMessage(recipientId) {
                         }, {
                             type: "postback",
                             title: "Saiba mais",
-                            payload: "PRODUTO_1"
+                            payload: "produto1"
                         }],
                     }, {
                         title: "touch",
-                        subtitle: "Your Hands, Now in VR",
+                        subtitle: "Utilize também suas mão no VR",
                         item_url: "https://www.oculus.com/en-us/touch/",
                         image_url: "https://images.techhive.com/images/article/2015/09/oculus-touch-100616983-large.jpg",
                         buttons: [{
@@ -175,7 +175,7 @@ function sendCarrosselMessage(recipientId) {
                         }, {
                             type: "postback",
                             title: "Saiba mais",
-                            payload: "PRODUTO_2"
+                            payload: "produto2"
                         }]
                     }]
                 }
