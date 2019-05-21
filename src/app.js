@@ -259,10 +259,6 @@ function sendGenericTemplateMessage(recipientId, productId) {
                 type: "web_url",
                 url: "https://www.oculus.com/en-us/rift/",
                 title: "Comprar"
-            }, {
-                type: "postback",
-                title: "Saiba mais",
-                payload: "produto1"
             }],
         };
     } else {
@@ -275,10 +271,6 @@ function sendGenericTemplateMessage(recipientId, productId) {
                 type: "web_url",
                 url: "https://www.oculus.com/en-us/touch/",
                 title: "Comprar"
-            }, {
-                type: "postback",
-                title: "Saiba mais",
-                payload: "produto2"
             }]
         }
     }
