@@ -13,9 +13,9 @@ app.set('port', process.env.PORT || 5000);
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
 
-var VALIDATION_TOKEN = "123456";
-var APP_SECRET = "a6f171f7615e67ce34e9ea800134307d";
-var PAGE_ACCESS_TOKEN = "EAAE306Y4ORwBAO5OLIoUkeZAxiABwPUYzxMHSnyYXD9Phy8OOkRlOwcs7b6t6GDUKUBwQpW07D76rirIXwamSnptwfpfUrpFhKlsKKf54HeBvWvMI7IjBuKBH4IPWXjOdWfOfBS9GwxOdUWn8zxnJ3PEHHUMeBI0kb1KgKGTMA9DFkyxY";
+var VALIDATION_TOKEN = "<cole aqui seu validation token>";
+var APP_SECRET = "<cole aqui seu app secret>";
+var PAGE_ACCESS_TOKEN = "<cole aqui seu page access token>";
 
 var userStates = {};
 
